@@ -1,0 +1,26 @@
+{
+  "presets": ["@babel/preset-typescript"],
+  "env": {
+    "cjs": {
+      "comments": false,
+      "ignore": ["**/*.d.ts", "**/__mocks__/**/*", "**/*.test.ts"],
+      "plugins": ["@babel/plugin-transform-modules-commonjs"]
+    },
+    "es": {
+      "comments": false,
+      "ignore": ["**/*.d.ts", "**/__mocks__/**/*", "**/*.test.ts"]
+    },
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "current"
+            }
+          }
+        ]
+      ]
+    }
+  }
+}

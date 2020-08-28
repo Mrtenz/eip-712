@@ -1,0 +1,5 @@
+node_modules/
+coverage/
+lib/
+typings/
+yarn-error.log

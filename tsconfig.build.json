@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declarationDir": "typings",
+    "emitDeclarationOnly": true
+  },
+  "include": ["src"],
+  "exclude": ["jest", "src/**/*.test.ts", "src/**/__mocks__/**/*"]
+}
