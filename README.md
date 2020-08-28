@@ -106,7 +106,7 @@ This function returns the type hash for a struct type. This is the same as `Kecc
 ```js
 import { getTypeHash } from 'eip-712';
 
-const getTypeHash = { /*...*/ };
+const typedData = { /*...*/ };
 console.log(getTypeHash(typedData, 'EIP712Domain').toString('hex')); // 8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f
 ```
 
@@ -117,7 +117,7 @@ This function returns the type before hashing it, e.g. `EIP712Domain(string name
 ```js
 import { encodeType } from 'eip-712';
 
-const getTypeHash = { /*...*/ };
+const typedData = { /*...*/ };
 console.log(encodeType(typedData, 'EIP712Domain')); // EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)
 ```
 
@@ -128,7 +128,7 @@ This function returns all sub-types used by a struct as a string array. If the s
 ```js
 import { getDependencies } from 'eip-712';
 
-const getTypeHash = { /*...*/ };
+const typedData = { /*...*/ };
 console.log(getDependencies(typedData, 'EIP712Domain')); // ['EIP712Domain']
 console.log(getDependencies(typedData, 'Mail')); // ['Mail', 'Person']
 ```
