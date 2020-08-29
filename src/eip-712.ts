@@ -50,7 +50,9 @@ export const encodeType = (typedData: TypedData, type: string): string => {
   const types = [primary, ...dependencies.sort()];
 
   return types
-    .map((dependency) => `${dependency}(${typedData.types[dependency].map((type) => `${type.type} ${type.name}`)})`)
+    .map((dependency) => {
+      return `${dependency}(${typedData.types[dependency].map((type) => `${type.type} ${type.name}`)})`;
+    })
     .join('');
 };
 
@@ -77,6 +79,10 @@ export const getTypeHash = (typedData: TypedData, type: string): Buffer => {
 export const encodeData = (typedData: TypedData, type: string, data: Record<string, unknown>): Buffer => {
   const [types, values] = typedData.types[type].reduce<[string[], unknown[]]>(
     ([previousTypes, previousValues], field) => {
+      if (data[field.name] === undefined || data[field.name] === null) {
+        throw new Error(`Cannot encode data: missing data for '${field.name}'`);
+      }
+
       const value = data[field.name];
 
       if (typedData.types[field.type]) {

@@ -108,6 +108,14 @@ describe('encodeData', () => {
     // @ts-expect-error
     expect(() => encodeData(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
+
+  it('throws when a type is missing', () => {
+    expect(() => encodeData(invalidMissingType, 'Mail', invalidSchema.message)).toThrow();
+  });
+
+  it('throws when data is missing', () => {
+    expect(() => encodeData(invalidMissingType, 'Mail', invalidSchema.message)).toThrow();
+  });
 });
 
 describe('getStructHash', () => {
@@ -137,6 +145,14 @@ describe('getStructHash', () => {
     // @ts-expect-error
     expect(() => getStructHash(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
+
+  it('throws when a type is missing', () => {
+    expect(() => encodeData(invalidMissingType, 'Mail', invalidSchema.message)).toThrow();
+  });
+
+  it('throws when data is missing', () => {
+    expect(() => encodeData(invalidMissingType, 'Mail', invalidSchema.message)).toThrow();
+  });
 });
 
 describe('getMessage', () => {
@@ -152,6 +168,14 @@ describe('getMessage', () => {
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
     expect(() => getMessage(invalidSchema)).toThrow();
+  });
+
+  it('throws when a type is missing', () => {
+    expect(() => getMessage(invalidMissingType)).toThrow();
+  });
+
+  it('throws when data is missing', () => {
+    expect(() => getMessage(invalidMissingData)).toThrow();
   });
 });
 
@@ -179,6 +203,6 @@ describe('asArray', () => {
   });
 
   it('throws when data is missing', () => {
-    expect(() => asArray(invalidMissingData)).toThrow('f');
+    expect(() => asArray(invalidMissingData)).toThrow();
   });
 });
