@@ -1,8 +1,7 @@
 import invalidData from './__fixtures__/invalid-data.json';
 import mailTypedData from './__fixtures__/typed-data-1.json';
 import approvalTypedData from './__fixtures__/typed-data-2.json';
-import { encodeData, encodeType, getDependencies, getMessage, getStructHash, getTypeHash } from './eip-712';
-import { TypedData } from './types';
+import { asArray, encodeData, encodeType, getDependencies, getMessage, getStructHash, getTypeHash } from './eip-712';
 
 describe('getDependencies', () => {
   it('returns all dependencies for the primary type', () => {
@@ -19,7 +18,8 @@ describe('getDependencies', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    expect(() => getDependencies((invalidData as unknown) as TypedData, 'EIP712Domain')).toThrow();
+    // @ts-expect-error
+    expect(() => getDependencies(invalidData, 'EIP712Domain')).toThrow();
   });
 });
 
@@ -45,7 +45,8 @@ describe('encodeType', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    expect(() => encodeType((invalidData as unknown) as TypedData, 'EIP712Domain')).toThrow();
+    // @ts-expect-error
+    expect(() => encodeType(invalidData, 'EIP712Domain')).toThrow();
   });
 });
 
@@ -73,7 +74,8 @@ describe('getTypeHash', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    expect(() => getTypeHash((invalidData as unknown) as TypedData, 'EIP712Domain')).toThrow();
+    // @ts-expect-error
+    expect(() => getTypeHash(invalidData, 'EIP712Domain')).toThrow();
   });
 });
 
@@ -101,7 +103,8 @@ describe('encodeData', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    expect(() => encodeData((invalidData as unknown) as TypedData, 'EIP712Domain', invalidData.domain)).toThrow();
+    // @ts-expect-error
+    expect(() => encodeData(invalidData, 'EIP712Domain', invalidData.domain)).toThrow();
   });
 });
 
@@ -129,7 +132,8 @@ describe('getStructHash', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    expect(() => getStructHash((invalidData as unknown) as TypedData, 'EIP712Domain', invalidData.domain)).toThrow();
+    // @ts-expect-error
+    expect(() => getStructHash(invalidData, 'EIP712Domain', invalidData.domain)).toThrow();
   });
 });
 
@@ -144,6 +148,22 @@ describe('getMessage', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    expect(() => getMessage((invalidData as unknown) as TypedData)).toThrow();
+    // @ts-expect-error
+    expect(() => getMessage(invalidData)).toThrow();
+  });
+});
+
+describe('asArray', () => {
+  it('returns the typed data as array', () => {
+    expect(asArray(mailTypedData)).toStrictEqual([
+      ['Cow', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'],
+      ['Bob', '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'],
+      'Hello, Bob!'
+    ]);
+
+    expect(asArray(approvalTypedData)).toStrictEqual([
+      '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+      ['0x4bbeEB066eD09B7AEd07bF39EEe0460DFa261520', '1000000000000000000', '', '1']
+    ]);
   });
 });

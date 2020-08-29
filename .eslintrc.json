@@ -70,7 +70,15 @@
         "jest": true
       },
       "extends": ["plugin:eslint-plugin-jest/recommended", "plugin:eslint-plugin-jest/style"],
-      "plugins": ["eslint-plugin-jest"]
+      "plugins": ["eslint-plugin-jest"],
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": [
+          "error",
+          {
+            "ts-expect-error": false
+          }
+        ]
+      }
     }
   ]
 }

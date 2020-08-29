@@ -97,7 +97,7 @@ export const encodeData = (typedData: TypedData, type: string, data: Record<stri
       if (field.type === 'bytes') {
         return [
           [...previousTypes, 'bytes32'],
-          [...previousValues, keccak256(value as string, 'hex')]
+          [...previousValues, keccak256(value as Buffer, 'hex')]
         ];
       }
 
@@ -137,4 +137,35 @@ export const getMessage = (typedData: TypedData): Buffer => {
     getStructHash(typedData, 'EIP712Domain', typedData.domain as Record<string, unknown>),
     getStructHash(typedData, typedData.primaryType, typedData.message)
   ]);
+};
+
+/**
+ * Get the typed data as array. This can be useful for encoding the typed data with the contract ABI.
+ *
+ * @param {TypedData} typedData
+ * @param {string} [type]
+ * @param data
+ * @return {any[]}
+ */
+export const asArray = (
+  typedData: TypedData,
+  type: string = typedData.primaryType,
+  data: Record<string, unknown> = typedData.message
+): unknown[] => {
+  if (!typedData.types[type]) {
+    throw new Error('Cannot get data as array: type does not exist');
+  }
+
+  return typedData.types[type].reduce<unknown[]>((array, { name, type }) => {
+    if (typedData.types[type]) {
+      if (!data[name]) {
+        throw new Error(`Cannot get data as array: missing data for '${name}'`);
+      }
+
+      return [...array, asArray(typedData, type, data[name] as Record<string, unknown>)];
+    }
+
+    const value = data[name];
+    return [...array, value];
+  }, []);
 };
