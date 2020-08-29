@@ -1,4 +1,6 @@
-import invalidData from './__fixtures__/invalid-data.json';
+import invalidMissingData from './__fixtures__/invalid-missing-data.json';
+import invalidMissingType from './__fixtures__/invalid-missing-type.json';
+import invalidSchema from './__fixtures__/invalid-schema.json';
 import mailTypedData from './__fixtures__/typed-data-1.json';
 import approvalTypedData from './__fixtures__/typed-data-2.json';
 import { asArray, encodeData, encodeType, getDependencies, getMessage, getStructHash, getTypeHash } from './eip-712';
@@ -19,7 +21,7 @@ describe('getDependencies', () => {
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
-    expect(() => getDependencies(invalidData, 'EIP712Domain')).toThrow();
+    expect(() => getDependencies(invalidSchema, 'EIP712Domain')).toThrow();
   });
 });
 
@@ -46,7 +48,7 @@ describe('encodeType', () => {
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
-    expect(() => encodeType(invalidData, 'EIP712Domain')).toThrow();
+    expect(() => encodeType(invalidSchema, 'EIP712Domain')).toThrow();
   });
 });
 
@@ -75,7 +77,7 @@ describe('getTypeHash', () => {
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
-    expect(() => getTypeHash(invalidData, 'EIP712Domain')).toThrow();
+    expect(() => getTypeHash(invalidSchema, 'EIP712Domain')).toThrow();
   });
 });
 
@@ -104,7 +106,7 @@ describe('encodeData', () => {
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
-    expect(() => encodeData(invalidData, 'EIP712Domain', invalidData.domain)).toThrow();
+    expect(() => encodeData(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
 });
 
@@ -133,7 +135,7 @@ describe('getStructHash', () => {
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
-    expect(() => getStructHash(invalidData, 'EIP712Domain', invalidData.domain)).toThrow();
+    expect(() => getStructHash(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
 });
 
@@ -149,7 +151,7 @@ describe('getMessage', () => {
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
-    expect(() => getMessage(invalidData)).toThrow();
+    expect(() => getMessage(invalidSchema)).toThrow();
   });
 });
 
@@ -165,5 +167,18 @@ describe('asArray', () => {
       '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
       ['0x4bbeEB066eD09B7AEd07bF39EEe0460DFa261520', '1000000000000000000', '', '1']
     ]);
+  });
+
+  it('throws for invalid JSON data', () => {
+    // @ts-expect-error
+    expect(() => asArray(invalidSchema)).toThrow();
+  });
+
+  it('throws when a type is missing', () => {
+    expect(() => asArray(invalidMissingType)).toThrow();
+  });
+
+  it('throws when data is missing', () => {
+    expect(() => asArray(invalidMissingData)).toThrow('f');
   });
 });

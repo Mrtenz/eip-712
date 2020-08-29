@@ -13,7 +13,7 @@ const EIP_191_PREFIX = Buffer.from('1901', 'hex');
  * @return {string[]}
  */
 export const getDependencies = (typedData: TypedData, type: string, dependencies: string[] = []): string[] => {
-  // `getDependencies` is called by all other functions, so we only validate the JSON schema here
+  // `getDependencies` is called by most other functions, so we validate the JSON schema here
   if (!validateTypedData(typedData)) {
     throw new Error('Typed data does not match JSON schema');
   }
@@ -152,6 +152,10 @@ export const asArray = (
   type: string = typedData.primaryType,
   data: Record<string, unknown> = typedData.message
 ): unknown[] => {
+  if (!validateTypedData(typedData)) {
+    throw new Error('Typed data does not match JSON schema');
+  }
+
   if (!typedData.types[type]) {
     throw new Error('Cannot get data as array: type does not exist');
   }

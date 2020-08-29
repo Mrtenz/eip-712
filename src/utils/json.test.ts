@@ -1,4 +1,4 @@
-import invalidSchema from '../__fixtures__/invalid-data.json';
+import invalidSchema from '../__fixtures__/invalid-schema.json';
 import validSchema from '../__fixtures__/typed-data-1.json';
 import { validateTypedData } from './json';
 
