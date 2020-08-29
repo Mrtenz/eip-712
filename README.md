@@ -66,6 +66,8 @@ First, define your typed data as a JSON object, according to the JSON schema spe
 
 ### Functions
 
+Here is a brief description of the functions available in this library. For more detailed examples, you can refer to [`src/eip-712.test.ts`](https://github.com/Mrtenz/eip-712/blob/master/src/eip-712.test.ts).
+
 #### `getMessage(typedData)`
 
 This function will return the full EIP-191 encoded message to be signed as Buffer, for the typed data specified.
@@ -75,6 +77,17 @@ import { getMessage } from 'eip-712';
 
 const typedData = { /*...*/ };
 console.log(getMessage(typedData).toString('hex')); // 1901f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090fc52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e
+```
+
+#### `asArray(typedData)`
+
+This function returns the typed data as an array. This can be useful for encoding typed data as ABI.
+
+```js
+import { asArray } from 'eip-712';
+
+const typedData = { /*...*/ };
+console.log(asArray(typedData)); // [ ['Cow', '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'], ['Bob', '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'], 'Hello, Bob!' ]
 ```
 
 #### `getStructHash(typedData, type, data)`
