@@ -103,7 +103,7 @@ export const encodeData = (typedData: TypedData, type: string, data: Record<stri
       if (field.type === 'bytes') {
         return [
           [...previousTypes, 'bytes32'],
-          [...previousValues, keccak256(value as Buffer, 'hex')]
+          [...previousValues, keccak256(Buffer.isBuffer(value) ? value : toBuffer(value as string), 'hex')]
         ];
       }
 
