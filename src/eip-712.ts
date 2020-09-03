@@ -2,6 +2,7 @@ import { defaultAbiCoder } from '@ethersproject/abi';
 import { TypedData } from './types';
 import { keccak256, toBuffer, validateTypedData } from './utils';
 
+const ARRAY_REGEX = /^(.*)\[([0-9]*?)]$/;
 const EIP_191_PREFIX = Buffer.from('1901', 'hex');
 
 /**
@@ -18,17 +19,23 @@ export const getDependencies = (typedData: TypedData, type: string, dependencies
     throw new Error('Typed data does not match JSON schema');
   }
 
-  if (dependencies.includes(type)) {
+  const match = type.match(/^\w+/);
+  if (!match) {
+    throw new Error('Cannot get dependencies: invalid type');
+  }
+
+  const actualType = match[0];
+  if (dependencies.includes(actualType)) {
     return dependencies;
   }
 
-  if (!typedData.types[type]) {
+  if (!typedData.types[actualType]) {
     return dependencies;
   }
 
   return [
     type,
-    ...typedData.types[type].reduce<string[]>(
+    ...typedData.types[actualType].reduce<string[]>(
       (previous, type) => [
         ...previous,
         ...getDependencies(typedData, type.type, previous).filter((dependency) => !previous.includes(dependency))
@@ -68,6 +75,54 @@ export const getTypeHash = (typedData: TypedData, type: string): Buffer => {
 };
 
 /**
+ * Encodes a single value to an ABI serialisable string, number or Buffer. Returns the data as tuple, which consists of
+ * an array of ABI compatible types, and an array of corresponding values.
+ *
+ * @param {TypedData} typedData
+ * @param {string} type
+ * @param {any} data
+ * @returns {[string[], (string | Buffer | number)[]}
+ */
+const encodeValue = (typedData: TypedData, type: string, data: unknown): [string, string | Buffer | number] => {
+  const match = type.match(ARRAY_REGEX);
+
+  // Checks for array types
+  if (match) {
+    const arrayType = match[1];
+    const length = Number(match[2]) || undefined;
+
+    if (!Array.isArray(data)) {
+      throw new Error('Cannot encode data: value is not of array type');
+    }
+
+    if (length && data.length !== length) {
+      throw new Error(`Cannot encode data: expected length of ${length}, but got ${data.length}`);
+    }
+
+    const encodedData = data.map((item) => encodeValue(typedData, arrayType, item));
+    const types = encodedData.map((item) => item[0]);
+    const values = encodedData.map((item) => item[1]);
+
+    return ['bytes32', keccak256(defaultAbiCoder.encode(types, values))];
+  }
+
+  if (typedData.types[type]) {
+    return ['bytes32', keccak256(encodeData(typedData, type, data as Record<string, unknown>))];
+  }
+
+  // Strings and arbitrary byte arrays are hashed to bytes32
+  if (type === 'string') {
+    return ['bytes32', keccak256(data as string, 'utf8')];
+  }
+
+  if (type === 'bytes') {
+    return ['bytes32', keccak256(Buffer.isBuffer(data) ? data : toBuffer(data as string), 'hex')];
+  }
+
+  return [type, data as string];
+};
+
+/**
  * Encode the data to an ABI encoded Buffer. The data should be a key -> value object with all the required values. All
  * dependant types are automatically encoded.
  *
@@ -78,38 +133,17 @@ export const getTypeHash = (typedData: TypedData, type: string): Buffer => {
  */
 export const encodeData = (typedData: TypedData, type: string, data: Record<string, unknown>): Buffer => {
   const [types, values] = typedData.types[type].reduce<[string[], unknown[]]>(
-    ([previousTypes, previousValues], field) => {
+    ([types, values], field) => {
       if (data[field.name] === undefined || data[field.name] === null) {
         throw new Error(`Cannot encode data: missing data for '${field.name}'`);
       }
 
       const value = data[field.name];
-
-      if (typedData.types[field.type]) {
-        return [
-          [...previousTypes, 'bytes32'],
-          [...previousValues, keccak256(encodeData(typedData, field.type, value as Record<string, unknown>))]
-        ];
-      }
-
-      // Strings and arbitrary byte arrays are hashed to bytes32
-      if (field.type === 'string') {
-        return [
-          [...previousTypes, 'bytes32'],
-          [...previousValues, keccak256(value as string, 'utf8')]
-        ];
-      }
-
-      if (field.type === 'bytes') {
-        return [
-          [...previousTypes, 'bytes32'],
-          [...previousValues, keccak256(Buffer.isBuffer(value) ? value : toBuffer(value as string), 'hex')]
-        ];
-      }
+      const [type, encodedValue] = encodeValue(typedData, field.type, value);
 
       return [
-        [...previousTypes, field.type],
-        [...previousValues, value]
+        [...types, type],
+        [...values, encodedValue]
       ];
     },
     [['bytes32'], [getTypeHash(typedData, type)]]

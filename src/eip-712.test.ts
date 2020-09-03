@@ -1,8 +1,12 @@
+import invalidArrayLength from './__fixtures__/invalid-array-length.json';
+import invalidArrayType from './__fixtures__/invalid-array-type.json';
 import invalidMissingData from './__fixtures__/invalid-missing-data.json';
 import invalidMissingType from './__fixtures__/invalid-missing-type.json';
 import invalidSchema from './__fixtures__/invalid-schema.json';
+import invalidType from './__fixtures__/invalid-type.json';
 import mailTypedData from './__fixtures__/typed-data-1.json';
 import approvalTypedData from './__fixtures__/typed-data-2.json';
+import arrayTypedData from './__fixtures__/typed-data-3.json';
 import { asArray, encodeData, encodeType, getDependencies, getMessage, getStructHash, getTypeHash } from './eip-712';
 
 describe('getDependencies', () => {
@@ -17,11 +21,21 @@ describe('getDependencies', () => {
       'TransactionApproval',
       'Transaction'
     ]);
+
+    expect(getDependencies(arrayTypedData, 'EIP712Domain')).toStrictEqual(['EIP712Domain']);
+    expect(getDependencies(arrayTypedData, 'Person')).toStrictEqual(['Person']);
+    expect(getDependencies(arrayTypedData, 'Mail')).toStrictEqual(['Mail', 'Person']);
   });
 
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
     expect(() => getDependencies(invalidSchema, 'EIP712Domain')).toThrow();
+  });
+
+  it('throws for invalid types', () => {
+    expect(() => getDependencies(invalidType, 'EIP712Domain')).toThrow();
+    expect(() => getDependencies(invalidType, 'Person')).toThrow();
+    expect(() => getDependencies(invalidType, 'Mail')).toThrow();
   });
 });
 
@@ -73,6 +87,16 @@ describe('getTypeHash', () => {
     expect(getTypeHash(approvalTypedData, 'TransactionApproval').toString('hex')).toBe(
       '5b360b7b2cc780b6a0687ac409805af3219ef7d9dcc865669e39a1dc7394ffc5'
     );
+
+    expect(getTypeHash(arrayTypedData, 'EIP712Domain').toString('hex')).toBe(
+      '8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f'
+    );
+    expect(getTypeHash(arrayTypedData, 'Mail').toString('hex')).toBe(
+      'b303efe9556a96b94a4900cf57bc81a6cc6d0b5047eb060c744f3baa7221385b'
+    );
+    expect(getTypeHash(arrayTypedData, 'Person').toString('hex')).toBe(
+      'b9d8c78acf9b987311de6c7b45bb6a9c8e1bf361fa7fd3467a2163f994c79500'
+    );
   });
 
   it('throws for invalid JSON data', () => {
@@ -102,6 +126,10 @@ describe('encodeData', () => {
     expect(encodeData(approvalTypedData, 'TransactionApproval', approvalTypedData.message).toString('hex')).toBe(
       '5b360b7b2cc780b6a0687ac409805af3219ef7d9dcc865669e39a1dc7394ffc5000000000000000000000000bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb9e7ba42b4ace63ae7d8ee163d5e642a085b32c2553717dcb37974e83fad289d0'
     );
+
+    expect(encodeData(arrayTypedData, 'Mail', arrayTypedData.message).toString('hex')).toBe(
+      'b303efe9556a96b94a4900cf57bc81a6cc6d0b5047eb060c744f3baa7221385bfc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8cea9e1c1b3d2ec0f0b45fcbf28f5e0e0d9240649bdb5a764f4c3a7acb9ab7f51c1c8738fb1e0a328b2d14d29f3dc9714e40c269598d60e4ab780afc5603a8678'
+    );
   });
 
   it('throws for invalid JSON data', () => {
@@ -110,11 +138,19 @@ describe('encodeData', () => {
   });
 
   it('throws when a type is missing', () => {
-    expect(() => encodeData(invalidMissingType, 'Mail', invalidSchema.message)).toThrow();
+    expect(() => encodeData(invalidMissingData, 'Mail', invalidMissingData.message)).toThrow();
   });
 
   it('throws when data is missing', () => {
-    expect(() => encodeData(invalidMissingType, 'Mail', invalidSchema.message)).toThrow();
+    expect(() => encodeData(invalidMissingType, 'Mail', invalidMissingType.message)).toThrow();
+  });
+
+  it('throws if the type is not an array', () => {
+    expect(() => encodeData(invalidArrayType, 'Mail', invalidArrayType.message)).toThrow();
+  });
+
+  it('throws if the array length is invalid', () => {
+    expect(() => encodeData(invalidArrayLength, 'Mail', invalidArrayLength.message)).toThrow();
   });
 });
 
