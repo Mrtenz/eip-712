@@ -1,7 +1,7 @@
 name: Deploy
 
 on:
-  releases:
+  release:
     types:
       - created
 
