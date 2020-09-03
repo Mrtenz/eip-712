@@ -1,0 +1,37 @@
+{
+  "valid": [
+    "address",
+    "bool",
+    "bytes",
+    "bytes1",
+    "bytes16",
+    "bytes32",
+    "int8",
+    "int128",
+    "int256",
+    "string",
+    "uint8",
+    "uint128",
+    "uint256",
+    "Mail",
+    "Person",
+    "EIP712Domain",
+    "address[]",
+    "address[1]",
+    "address[100]"
+  ],
+  "invalid": [
+    "bytes0",
+    "bytes33",
+    "foo bar",
+    "int",
+    "int0",
+    "int123",
+    "int264",
+    "uint",
+    "uint0",
+    "uint123",
+    "uint264",
+    "SomeStruct"
+  ]
+}

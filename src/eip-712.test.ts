@@ -64,6 +64,12 @@ describe('encodeType', () => {
     // @ts-expect-error
     expect(() => encodeType(invalidSchema, 'EIP712Domain')).toThrow();
   });
+
+  it('throws for invalid types', () => {
+    expect(() => encodeType(invalidType, 'EIP712Domain')).toThrow();
+    expect(() => encodeType(invalidType, 'Person')).toThrow();
+    expect(() => encodeType(invalidType, 'Mail')).toThrow();
+  });
 });
 
 describe('getTypeHash', () => {
