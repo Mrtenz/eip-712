@@ -68,7 +68,7 @@ First, define your typed data as a JSON object, according to the JSON schema spe
 
 ### Functions
 
-Here is a brief description of the functions available in this library. For more detailed examples, you can refer to [`src/eip-712.test.ts`](https://github.com/Mrtenz/eip-712/blob/master/src/eip-712.test.ts).
+Here is a brief description of the functions available in this library. For more detailed examples, you can refer to [`src/eip-712.test.ts`](https://github.com/Mrtenz/eip-712/blob/master/src/eip-712.test.ts), or to the examples in the [`examples`](https://github.com/Mrtenz/eip-712/blob/master/examples) folder.
 
 #### `getMessage(typedData)`
 
