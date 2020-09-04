@@ -5,7 +5,8 @@ import { keccak256, toBuffer, validateTypedData, TYPE_REGEX, ARRAY_REGEX, isVali
 const EIP_191_PREFIX = Buffer.from('1901', 'hex');
 
 /**
- * Get the dependencies of a type.
+ * Get the dependencies of a struct type. If a struct has the same dependency multiple times, it's only included once
+ * in the resulting array.
  *
  * @param {TypedData} typedData
  * @param {string} type

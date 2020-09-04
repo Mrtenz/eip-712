@@ -2,9 +2,11 @@
 
 ![Version](https://img.shields.io/npm/v/eip-712) ![License](https://img.shields.io/github/license/Mrtenz/eip-712) [![Travis CI](https://travis-ci.com/Mrtenz/eip-712.svg?branch=master)](https://travis-ci.com/Mrtenz/eip-712) [![codecov](https://codecov.io/gh/Mrtenz/eip-712/branch/master/graph/badge.svg)](https://codecov.io/gh/Mrtenz/eip-712)
 
-This is a library for Node.js and web browsers with some utility functions that can help with signing and verifying [EIP-712](https://eips.ethereum.org/EIPS/eip-712) based messages. It is fully written in TypeScript.
+This is a library for Node.js and web browsers with some utility functions that can help with signing and verifying [EIP-712](https://eips.ethereum.org/EIPS/eip-712) based messages. It is fully written in TypeScript, and is currently only compatible with the latest specification of EIP-712 ([eth_signTypedData_v4](https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4)).
 
 https://eips.ethereum.org/EIPS/eip-712
+
+Note that this library currently does not handle the signing itself. For this, you can use something like Ethers.js or ethereumjs-util. For examples, please see the [`examples`](https://github.com/Mrtenz/eip-712/blob/master/examples) folder.
 
 ## Installation
 
@@ -66,7 +68,7 @@ First, define your typed data as a JSON object, according to the JSON schema spe
 
 ### Functions
 
-Here is a brief description of the functions available in this library. For more detailed examples, you can refer to [`src/eip-712.test.ts`](https://github.com/Mrtenz/eip-712/blob/master/src/eip-712.test.ts).
+Here is a brief description of the functions available in this library. For more detailed examples, you can refer to [`src/eip-712.test.ts`](https://github.com/Mrtenz/eip-712/blob/master/src/eip-712.test.ts), or to the examples in the [`examples`](https://github.com/Mrtenz/eip-712/blob/master/examples) folder.
 
 #### `getMessage(typedData)`
 
