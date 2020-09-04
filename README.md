@@ -70,15 +70,16 @@ First, define your typed data as a JSON object, according to the JSON schema spe
 
 Here is a brief description of the functions available in this library. For more detailed examples, you can refer to [`src/eip-712.test.ts`](https://github.com/Mrtenz/eip-712/blob/master/src/eip-712.test.ts), or to the examples in the [`examples`](https://github.com/Mrtenz/eip-712/blob/master/examples) folder.
 
-#### `getMessage(typedData)`
+#### `getMessage(typedData, hash?)`
 
-This function will return the full EIP-191 encoded message to be signed as Buffer, for the typed data specified.
+This function will return the full EIP-191 encoded message to be signed as Buffer, for the typed data specified. If `hash` is enabled, the message will be hashed using Keccak256.
 
 ```js
 import { getMessage } from 'eip-712';
 
 const typedData = { /*...*/ };
 console.log(getMessage(typedData).toString('hex')); // 1901f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090fc52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e
+console.log(getMessage(typedData, true).toString('hex')); // be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2
 ```
 
 #### `asArray(typedData)`
