@@ -170,17 +170,25 @@ export const getStructHash = (typedData: TypedData, type: string, data: Record<s
 };
 
 /**
- * Get the EIP-191 encoded message to sign, from the typedData object.
+ * Get the EIP-191 encoded message to sign, from the typedData object. If `hash` is enabled, the message will be hashed
+ * with Keccak256.
  *
  * @param {TypedData} typedData
+ * @param {boolean} hash
  * @return {Buffer}
  */
-export const getMessage = (typedData: TypedData): Buffer => {
-  return Buffer.concat([
+export const getMessage = (typedData: TypedData, hash?: boolean): Buffer => {
+  const message = Buffer.concat([
     EIP_191_PREFIX,
     getStructHash(typedData, 'EIP712Domain', typedData.domain as Record<string, unknown>),
     getStructHash(typedData, typedData.primaryType, typedData.message)
   ]);
+
+  if (hash) {
+    return keccak256(message);
+  }
+
+  return message;
 };
 
 /**
