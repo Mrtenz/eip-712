@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 import { utils } from 'ethers';
-import { getMessage, TypedData, keccak256 } from '../../src';
+import { getMessage, TypedData } from '../../src';
 
 // The typed data to sign
 // prettier-ignore
@@ -47,7 +47,7 @@ const privateKey = randomBytes(32);
 const signingKey = new utils.SigningKey(privateKey);
 
 // Get a signable message from the typed data
-const message = keccak256(getMessage(typedData));
+const message = getMessage(typedData, true);
 
 // Sign the message with the private key
 const { r, s, v } = signingKey.signDigest(message);

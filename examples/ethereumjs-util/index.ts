@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 import { ecsign } from 'ethereumjs-util';
-import { getMessage, TypedData, keccak256 } from '../../src';
+import { getMessage, TypedData } from '../../src';
 
 // The typed data to sign
 // prettier-ignore
@@ -46,7 +46,7 @@ const typedData: TypedData = {
 const privateKey = randomBytes(32);
 
 // Get a signable message from the typed data
-const message = keccak256(getMessage(typedData));
+const message = getMessage(typedData, true);
 
 // Sign the message with the private key
 const { r, s, v } = ecsign(message, privateKey);

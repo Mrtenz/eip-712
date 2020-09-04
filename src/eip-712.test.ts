@@ -207,6 +207,15 @@ describe('getMessage', () => {
     );
   });
 
+  it('hashes the message with Keccak-256', () => {
+    expect(getMessage(mailTypedData, true).toString('hex')).toBe(
+      'be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2'
+    );
+    expect(getMessage(approvalTypedData, true).toString('hex')).toBe(
+      'ee0cdea747f4a81355be92dbf30e209dbd2954a82d5a82482b7c7800089c7f57'
+    );
+  });
+
   it('throws for invalid JSON data', () => {
     // @ts-expect-error
     expect(() => getMessage(invalidSchema)).toThrow();
