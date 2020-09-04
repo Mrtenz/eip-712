@@ -110,7 +110,7 @@ const encodeValue = (typedData: TypedData, type: string, data: unknown): [string
   }
 
   if (typedData.types[type]) {
-    return ['bytes32', keccak256(encodeData(typedData, type, data as Record<string, unknown>))];
+    return ['bytes32', getStructHash(typedData, type, data as Record<string, unknown>)];
   }
 
   // Strings and arbitrary byte arrays are hashed to bytes32

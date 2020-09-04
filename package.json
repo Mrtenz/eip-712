@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@ethersproject/abi": "^5.0.3",
-    "ajv": "^6.12.4",
+    "@exodus/schemasafe": "^1.0.0-rc.2",
     "keccak": "^3.0.1"
   },
   "devDependencies": {

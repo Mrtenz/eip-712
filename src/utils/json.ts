@@ -1,4 +1,4 @@
-import Ajv from 'ajv';
+import { validator } from '@exodus/schemasafe';
 import { TypedData } from '../types';
 
 /**
@@ -30,7 +30,7 @@ const EIP_712_SCHEMA = {
     message: { type: 'object' }
   },
   required: ['types', 'primaryType', 'domain', 'message']
-} as const;
+};
 
 /**
  * Validates that `data` matches the EIP-712 JSON schema.
@@ -39,6 +39,5 @@ const EIP_712_SCHEMA = {
  * @return {boolean}
  */
 export const validateTypedData = (data: unknown): data is TypedData => {
-  const ajv = new Ajv();
-  return ajv.validate(EIP_712_SCHEMA, data) as boolean;
+  return validator(EIP_712_SCHEMA)(data);
 };
