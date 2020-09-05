@@ -44,8 +44,8 @@
     "prepare": "yarn run build"
   },
   "dependencies": {
-    "@ethersproject/abi": "^5.0.3",
     "@exodus/schemasafe": "^1.0.0-rc.2",
+    "@findeth/abi": "^0.3.0",
     "keccak": "^3.0.1"
   },
   "devDependencies": {
