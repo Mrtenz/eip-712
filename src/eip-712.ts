@@ -1,6 +1,6 @@
-import { defaultAbiCoder } from '@ethersproject/abi';
 import { TypedData } from './types';
 import { keccak256, toBuffer, validateTypedData, TYPE_REGEX, ARRAY_REGEX, isValidType } from './utils';
+import { encode } from './utils/abi';
 
 const EIP_191_PREFIX = Buffer.from('1901', 'hex');
 
@@ -107,7 +107,7 @@ const encodeValue = (typedData: TypedData, type: string, data: unknown): [string
     const types = encodedData.map((item) => item[0]);
     const values = encodedData.map((item) => item[1]);
 
-    return ['bytes32', keccak256(defaultAbiCoder.encode(types, values))];
+    return ['bytes32', keccak256(encode(types, values))];
   }
 
   if (typedData.types[type]) {
@@ -153,7 +153,7 @@ export const encodeData = (typedData: TypedData, type: string, data: Record<stri
     [['bytes32'], [getTypeHash(typedData, type)]]
   );
 
-  return toBuffer(defaultAbiCoder.encode(types, values));
+  return encode(types, values);
 };
 
 /**

@@ -1230,6 +1230,13 @@
   resolved "https://registry.yarnpkg.com/@exodus/schemasafe/-/schemasafe-1.0.0-rc.2.tgz#3a0214ce90709f4d4c19d526890ed2e42b286a66"
   integrity sha512-W98NvvOe/Med3o66xTO03pd7a2omZebH79PV64gSE+ceDdU8uxQhFTa7ISiD1kseyqyOrMyW5/MNdsGEU02i3Q==
 
+"@findeth/abi@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@findeth/abi/-/abi-0.3.0.tgz#2b5593eec806aef76ee556e7df7ad85cb946fd5c"
+  integrity sha512-+MBiYa8IfI2iDuR33Hv7d3R6vGXsHycIRW0oModR1tIj8hQ8Js6ncztCsL4dAqcBzTEuw/lIXlX5+2hRCbCQAQ==
+  dependencies:
+    keccak "^3.0.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
