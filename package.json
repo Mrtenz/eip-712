@@ -44,9 +44,9 @@
     "prepare": "yarn run build"
   },
   "dependencies": {
-    "@exodus/schemasafe": "^1.0.0-rc.2",
     "@findeth/abi": "^0.3.0",
-    "keccak": "^3.0.1"
+    "keccak": "^3.0.1",
+    "superstruct": "^0.10.12"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",

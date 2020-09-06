@@ -8,6 +8,7 @@ describe('validateTypedData', () => {
   });
 
   it('returns false for invalid JSON schemas', () => {
+    expect(validateTypedData({})).toBe(false);
     expect(validateTypedData(invalidSchema)).toBe(false);
   });
 });
