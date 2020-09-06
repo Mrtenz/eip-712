@@ -1,7 +1,7 @@
 {
   "name": "eip-712",
   "version": "0.4.1",
-  "description": "Utility functions that can help with signing and verifying EIP-712 based messages",
+  "description": "Tiny library with utility functions that can help with signing and verifying EIP-712 based messages",
   "author": "Maarten Zuidhoorn <maarten@zuidhoorn.com>",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   },
   "keywords": [
     "ethereum",
-    "eip-712"
+    "eip712"
   ],
   "license": "MIT",
   "main": "lib/cjs/index.js",
