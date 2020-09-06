@@ -28,7 +28,6 @@ describe('getDependencies', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => getDependencies(invalidSchema, 'EIP712Domain')).toThrow();
   });
 
@@ -61,7 +60,6 @@ describe('encodeType', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => encodeType(invalidSchema, 'EIP712Domain')).toThrow();
   });
 
@@ -106,7 +104,6 @@ describe('getTypeHash', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => getTypeHash(invalidSchema, 'EIP712Domain')).toThrow();
   });
 });
@@ -139,7 +136,6 @@ describe('encodeData', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => encodeData(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
 
@@ -184,7 +180,6 @@ describe('getStructHash', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => getStructHash(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
 
@@ -217,7 +212,6 @@ describe('getMessage', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => getMessage(invalidSchema)).toThrow();
   });
 
@@ -245,7 +239,6 @@ describe('asArray', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error
     expect(() => asArray(invalidSchema)).toThrow();
   });
 

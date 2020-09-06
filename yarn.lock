@@ -1225,11 +1225,6 @@
     "@ethersproject/properties" "^5.0.3"
     "@ethersproject/strings" "^5.0.3"
 
-"@exodus/schemasafe@^1.0.0-rc.2":
-  version "1.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@exodus/schemasafe/-/schemasafe-1.0.0-rc.2.tgz#3a0214ce90709f4d4c19d526890ed2e42b286a66"
-  integrity sha512-W98NvvOe/Med3o66xTO03pd7a2omZebH79PV64gSE+ceDdU8uxQhFTa7ISiD1kseyqyOrMyW5/MNdsGEU02i3Q==
-
 "@findeth/abi@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@findeth/abi/-/abi-0.3.0.tgz#2b5593eec806aef76ee556e7df7ad85cb946fd5c"
@@ -5947,6 +5942,11 @@ stubs@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/stubs/-/stubs-3.0.0.tgz#e8d2ba1fa9c90570303c030b6900f7d5f89abe5b"
   integrity sha1-6NK6H6nJBXAwPAMLaQD31fiavls=
+
+superstruct@^0.10.12:
+  version "0.10.12"
+  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.10.12.tgz#7b2c8adaf61b75257265eac3b588f30017f996f0"
+  integrity sha512-FiNhfegyytDI0QxrrEoeGknFM28SnoHqCBpkWewUm8jRNj74NVxLpiiePvkOo41Ze/aKMSHa/twWjNF81mKaQQ==
 
 supports-color@^5.3.0:
   version "5.5.0"

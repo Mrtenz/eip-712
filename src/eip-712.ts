@@ -1,6 +1,5 @@
-import { TypedData } from './types';
-import { keccak256, toBuffer, validateTypedData, TYPE_REGEX, ARRAY_REGEX, isValidType } from './utils';
-import { encode } from './utils/abi';
+import { ARRAY_REGEX, TYPE_REGEX, TypedData } from './types';
+import { keccak256, toBuffer, validateTypedData, encode } from './utils';
 
 const EIP_191_PREFIX = Buffer.from('1901', 'hex');
 
@@ -19,11 +18,7 @@ export const getDependencies = (typedData: TypedData, type: string, dependencies
     throw new Error('Typed data does not match JSON schema');
   }
 
-  const match = type.match(TYPE_REGEX);
-  if (!match) {
-    throw new Error('Cannot get dependencies: invalid type');
-  }
-
+  const match = type.match(TYPE_REGEX)!;
   const actualType = match[0];
   if (dependencies.includes(actualType)) {
     return dependencies;
@@ -53,10 +48,6 @@ export const getDependencies = (typedData: TypedData, type: string, dependencies
  * @return {string}
  */
 export const encodeType = (typedData: TypedData, type: string): string => {
-  if (!isValidType(typedData, type)) {
-    throw new Error(`Cannot encode type: ${type} is not a valid type`);
-  }
-
   const [primary, ...dependencies] = getDependencies(typedData, type);
   const types = [primary, ...dependencies.sort()];
 
