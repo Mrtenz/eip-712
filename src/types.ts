@@ -40,7 +40,10 @@ export const EIP_712_DOMAIN_TYPE = object({
  */
 export type EIP712Domain = StructType<typeof EIP_712_DOMAIN_TYPE>;
 
-export const TYPES = refinement(record(string(), array(EIP_712_TYPE)), 'Types', (value) => {
+export const TYPES = refinement<{
+  EIP712Domain: EIP712Type[];
+  [key: string]: EIP712Type[];
+}>(record(string(), array(EIP_712_TYPE)), 'Types', (value) => {
   return !!value.EIP712Domain;
 });
 
