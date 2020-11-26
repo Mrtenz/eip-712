@@ -1,4 +1,17 @@
-import { array, number, object, optional, pattern, record, refinement, string, StructType, union } from 'superstruct';
+import {
+  array,
+  intersection,
+  number,
+  object,
+  optional,
+  pattern,
+  record,
+  refinement,
+  string,
+  StructType,
+  type,
+  union
+} from 'superstruct';
 
 export const TYPE_REGEX = /^\w+/;
 export const ARRAY_REGEX = /^(.*)\[([0-9]*?)]$/;
@@ -40,15 +53,8 @@ export const EIP_712_DOMAIN_TYPE = object({
  */
 export type EIP712Domain = StructType<typeof EIP_712_DOMAIN_TYPE>;
 
-export const TYPES = refinement<{
-  EIP712Domain: EIP712Type[];
-  [key: string]: EIP712Type[];
-}>(record(string(), array(EIP_712_TYPE)), 'Types', (value) => {
-  return !!value.EIP712Domain;
-});
-
 export const EIP_712_TYPED_DATA_TYPE = object({
-  types: TYPES,
+  types: intersection([type({ EIP712Domain: array(EIP_712_TYPE) }), record(string(), array(EIP_712_TYPE))]),
   primaryType: string(),
   domain: EIP_712_DOMAIN_TYPE,
   message: object()
