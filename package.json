@@ -1,6 +1,6 @@
 {
   "name": "eip-712",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Tiny library with utility functions that can help with signing and verifying EIP-712 based messages",
   "author": "Maarten Zuidhoorn <maarten@zuidhoorn.com>",
   "repository": {
