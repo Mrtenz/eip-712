@@ -98,7 +98,7 @@ describe('getTypeHash', () => {
       '8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f'
     );
     expect(getTypeHash(arrayTypedData, 'Mail').toString('hex')).toBe(
-      'b303efe9556a96b94a4900cf57bc81a6cc6d0b5047eb060c744f3baa7221385b'
+      'c81112a69b6596b8bc0678e67d97fbf9bed619811fc781419323ec02d1c7290d'
     );
     expect(getTypeHash(arrayTypedData, 'Person').toString('hex')).toBe(
       'b9d8c78acf9b987311de6c7b45bb6a9c8e1bf361fa7fd3467a2163f994c79500'
@@ -134,7 +134,7 @@ describe('encodeData', () => {
     );
 
     expect(encodeData(arrayTypedData, 'Mail', arrayTypedData.message).toString('hex')).toBe(
-      'b303efe9556a96b94a4900cf57bc81a6cc6d0b5047eb060c744f3baa7221385bfc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8392bb8ab5338a9075ce8fec1b431e334007d4de1e5e83201ca35762e24428e24b7c4150525d88db452c5f08f93f4593daa458ab6280b012532183aed3a8e4a01'
+      'c81112a69b6596b8bc0678e67d97fbf9bed619811fc781419323ec02d1c7290dafd2599280d009dcb3e261f4bccebec901d67c3f54b56d49bf8327359fc69cd7392bb8ab5338a9075ce8fec1b431e334007d4de1e5e83201ca35762e24428e24b7c4150525d88db452c5f08f93f4593daa458ab6280b012532183aed3a8e4a01'
     );
   });
 
@@ -205,6 +205,9 @@ describe('getMessage', () => {
     expect(getMessage(approvalTypedData).toString('hex')).toBe(
       '190167083568259b4a947b02ce4dca4cc91f1e7f01d109c8805668755be5ab5adbb9309886ad75ec7c2c6a69bffa2669bad00e3b1e0a85221eff4e8926a2f8ff5077'
     );
+    expect(getMessage(arrayTypedData).toString('hex')).toBe(
+      '1901f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f6757567025d2ba15d5ebb228ea677055b8b601007e60e9463f6ed7c68f918189'
+    );
   });
 
   it('hashes the message with Keccak-256', () => {
@@ -213,6 +216,9 @@ describe('getMessage', () => {
     );
     expect(getMessage(approvalTypedData, true).toString('hex')).toBe(
       'ee0cdea747f4a81355be92dbf30e209dbd2954a82d5a82482b7c7800089c7f57'
+    );
+    expect(getMessage(arrayTypedData, true).toString('hex')).toBe(
+      'c6f6c8028eadb17bc5c9e2ea2f738e92e49cfa627d19896c250fd2eac653e4e0'
     );
   });
 

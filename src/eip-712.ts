@@ -29,7 +29,7 @@ export const getDependencies = (typedData: TypedData, type: string, dependencies
   }
 
   return [
-    type,
+    actualType,
     ...typedData.types[actualType].reduce<string[]>(
       (previous, type) => [
         ...previous,
