@@ -1,3 +1,4 @@
+import { getOptions, Options } from './options';
 import { ARRAY_REGEX, TYPE_REGEX, TypedData } from './types';
 import { keccak256, toBuffer, validateTypedData, encode } from './utils';
 
@@ -9,12 +10,18 @@ const EIP_191_PREFIX = Buffer.from('1901', 'hex');
  *
  * @param {TypedData} typedData
  * @param {string} type
+ * @param {Options} [options]
  * @param {string[]} [dependencies]
  * @return {string[]}
  */
-export const getDependencies = (typedData: TypedData, type: string, dependencies: string[] = []): string[] => {
+export const getDependencies = (
+  typedData: TypedData,
+  type: string,
+  options?: Options,
+  dependencies: string[] = []
+): string[] => {
   // `getDependencies` is called by most other functions, so we validate the JSON schema here
-  if (!validateTypedData(typedData)) {
+  if (!validateTypedData(typedData, options)) {
     throw new Error('Typed data does not match JSON schema');
   }
 
@@ -33,7 +40,9 @@ export const getDependencies = (typedData: TypedData, type: string, dependencies
     ...typedData.types[actualType].reduce<string[]>(
       (previous, type) => [
         ...previous,
-        ...getDependencies(typedData, type.type, previous).filter((dependency) => !previous.includes(dependency))
+        ...getDependencies(typedData, type.type, options, previous).filter(
+          (dependency) => !previous.includes(dependency)
+        )
       ],
       []
     )
@@ -45,10 +54,11 @@ export const getDependencies = (typedData: TypedData, type: string, dependencies
  *
  * @param {TypedData} typedData
  * @param {string} type
+ * @param {Options} [options]
  * @return {string}
  */
-export const encodeType = (typedData: TypedData, type: string): string => {
-  const [primary, ...dependencies] = getDependencies(typedData, type);
+export const encodeType = (typedData: TypedData, type: string, options?: Options): string => {
+  const [primary, ...dependencies] = getDependencies(typedData, type, options);
   const types = [primary, ...dependencies.sort()];
 
   return types
@@ -63,10 +73,11 @@ export const encodeType = (typedData: TypedData, type: string): string => {
  *
  * @param {TypedData} typedData
  * @param {string} type
+ * @param {Options} [options]
  * @return {BufferEncoding}
  */
-export const getTypeHash = (typedData: TypedData, type: string): Buffer => {
-  return keccak256(encodeType(typedData, type), 'utf8');
+export const getTypeHash = (typedData: TypedData, type: string, options?: Options): Buffer => {
+  return keccak256(encodeType(typedData, type, options), 'utf8');
 };
 
 /**
@@ -76,9 +87,15 @@ export const getTypeHash = (typedData: TypedData, type: string): Buffer => {
  * @param {TypedData} typedData
  * @param {string} type
  * @param {any} data
+ * @param {Options} [options]
  * @returns {[string[], (string | Buffer | number)[]}
  */
-const encodeValue = (typedData: TypedData, type: string, data: unknown): [string, string | Buffer | number] => {
+const encodeValue = (
+  typedData: TypedData,
+  type: string,
+  data: unknown,
+  options?: Options
+): [string, string | Buffer | number] => {
   const match = type.match(ARRAY_REGEX);
 
   // Checks for array types
@@ -94,7 +111,7 @@ const encodeValue = (typedData: TypedData, type: string, data: unknown): [string
       throw new Error(`Cannot encode data: expected length of ${length}, but got ${data.length}`);
     }
 
-    const encodedData = data.map((item) => encodeValue(typedData, arrayType, item));
+    const encodedData = data.map((item) => encodeValue(typedData, arrayType, item, options));
     const types = encodedData.map((item) => item[0]);
     const values = encodedData.map((item) => item[1]);
 
@@ -102,7 +119,7 @@ const encodeValue = (typedData: TypedData, type: string, data: unknown): [string
   }
 
   if (typedData.types[type]) {
-    return ['bytes32', getStructHash(typedData, type, data as Record<string, unknown>)];
+    return ['bytes32', getStructHash(typedData, type, data as Record<string, unknown>, options)];
   }
 
   // Strings and arbitrary byte arrays are hashed to bytes32
@@ -124,9 +141,15 @@ const encodeValue = (typedData: TypedData, type: string, data: unknown): [string
  * @param {TypedData} typedData
  * @param {string} type
  * @param {Record<string, any>} data
+ * @param {Options} [options]
  * @return {Buffer}
  */
-export const encodeData = (typedData: TypedData, type: string, data: Record<string, unknown>): Buffer => {
+export const encodeData = (
+  typedData: TypedData,
+  type: string,
+  data: Record<string, unknown>,
+  options?: Options
+): Buffer => {
   const [types, values] = typedData.types[type].reduce<[string[], unknown[]]>(
     ([types, values], field) => {
       if (data[field.name] === undefined || data[field.name] === null) {
@@ -134,14 +157,14 @@ export const encodeData = (typedData: TypedData, type: string, data: Record<stri
       }
 
       const value = data[field.name];
-      const [type, encodedValue] = encodeValue(typedData, field.type, value);
+      const [type, encodedValue] = encodeValue(typedData, field.type, value, options);
 
       return [
         [...types, type],
         [...values, encodedValue]
       ];
     },
-    [['bytes32'], [getTypeHash(typedData, type)]]
+    [['bytes32'], [getTypeHash(typedData, type, options)]]
   );
 
   return encode(types, values);
@@ -154,10 +177,16 @@ export const encodeData = (typedData: TypedData, type: string, data: Record<stri
  * @param {TypedData} typedData
  * @param {string} type
  * @param {Record<string, any>} data
+ * @param {Options} [options]
  * @return {Buffer}
  */
-export const getStructHash = (typedData: TypedData, type: string, data: Record<string, unknown>): Buffer => {
-  return keccak256(encodeData(typedData, type, data));
+export const getStructHash = (
+  typedData: TypedData,
+  type: string,
+  data: Record<string, unknown>,
+  options?: Options
+): Buffer => {
+  return keccak256(encodeData(typedData, type, data, options));
 };
 
 /**
@@ -166,13 +195,15 @@ export const getStructHash = (typedData: TypedData, type: string, data: Record<s
  *
  * @param {TypedData} typedData
  * @param {boolean} hash
+ * @param {Options} [options]
  * @return {Buffer}
  */
-export const getMessage = (typedData: TypedData, hash?: boolean): Buffer => {
+export const getMessage = (typedData: TypedData, hash?: boolean, options?: Options): Buffer => {
+  const { domain } = getOptions(options);
   const message = Buffer.concat([
     EIP_191_PREFIX,
-    getStructHash(typedData, 'EIP712Domain', typedData.domain as Record<string, unknown>),
-    getStructHash(typedData, typedData.primaryType, typedData.message)
+    getStructHash(typedData, domain, typedData.domain as Record<string, unknown>, options),
+    getStructHash(typedData, typedData.primaryType, typedData.message, options)
   ]);
 
   if (hash) {
@@ -188,14 +219,16 @@ export const getMessage = (typedData: TypedData, hash?: boolean): Buffer => {
  * @param {TypedData} typedData
  * @param {string} [type]
  * @param data
+ * @param {Options} [options]
  * @return {any[]}
  */
 export const asArray = (
   typedData: TypedData,
   type: string = typedData.primaryType,
-  data: Record<string, unknown> = typedData.message
+  data: Record<string, unknown> = typedData.message,
+  options?: Options
 ): unknown[] => {
-  if (!validateTypedData(typedData)) {
+  if (!validateTypedData(typedData, options)) {
     throw new Error('Typed data does not match JSON schema');
   }
 
@@ -209,7 +242,7 @@ export const asArray = (
         throw new Error(`Cannot get data as array: missing data for '${name}'`);
       }
 
-      return [...array, asArray(typedData, type, data[name] as Record<string, unknown>)];
+      return [...array, asArray(typedData, type, data[name] as Record<string, unknown>, options)];
     }
 
     const value = data[name];

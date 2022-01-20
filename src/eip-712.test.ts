@@ -7,6 +7,7 @@ import invalidType from './__fixtures__/invalid-type.json';
 import mailTypedData from './__fixtures__/typed-data-1.json';
 import approvalTypedData from './__fixtures__/typed-data-2.json';
 import arrayTypedData from './__fixtures__/typed-data-3.json';
+import customTypedData from './__fixtures__/typed-data-4.json';
 import { asArray, encodeData, encodeType, getDependencies, getMessage, getStructHash, getTypeHash } from './eip-712';
 
 describe('getDependencies', () => {
@@ -25,10 +26,13 @@ describe('getDependencies', () => {
     expect(getDependencies(arrayTypedData, 'EIP712Domain')).toStrictEqual(['EIP712Domain']);
     expect(getDependencies(arrayTypedData, 'Person')).toStrictEqual(['Person']);
     expect(getDependencies(arrayTypedData, 'Mail')).toStrictEqual(['Mail', 'Person']);
+
+    expect(getDependencies(customTypedData, 'FooBarDomain', { domain: 'FooBarDomain' })).toStrictEqual([
+      'FooBarDomain'
+    ]);
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => getDependencies(invalidSchema, 'EIP712Domain')).toThrow();
   });
 
@@ -58,10 +62,13 @@ describe('encodeType', () => {
     expect(encodeType(approvalTypedData, 'TransactionApproval')).toBe(
       'TransactionApproval(address owner,Transaction transaction)Transaction(address to,uint256 amount,bytes data,uint256 nonce)'
     );
+
+    expect(encodeType(customTypedData, 'FooBarDomain', { domain: 'FooBarDomain' })).toBe(
+      'FooBarDomain(string name,string version,uint256 chainId,address verifyingContract)'
+    );
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => encodeType(invalidSchema, 'EIP712Domain')).toThrow();
   });
 
@@ -103,10 +110,13 @@ describe('getTypeHash', () => {
     expect(getTypeHash(arrayTypedData, 'Person').toString('hex')).toBe(
       'b9d8c78acf9b987311de6c7b45bb6a9c8e1bf361fa7fd3467a2163f994c79500'
     );
+
+    expect(getTypeHash(customTypedData, 'FooBarDomain', { domain: 'FooBarDomain' }).toString('hex')).toBe(
+      '85b412c5db9e26aa4f6bf794e72b1557f463a0978ceef9acaff7f6ff1eb24e57'
+    );
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => getTypeHash(invalidSchema, 'EIP712Domain')).toThrow();
   });
 });
@@ -136,10 +146,15 @@ describe('encodeData', () => {
     expect(encodeData(arrayTypedData, 'Mail', arrayTypedData.message).toString('hex')).toBe(
       'c81112a69b6596b8bc0678e67d97fbf9bed619811fc781419323ec02d1c7290dafd2599280d009dcb3e261f4bccebec901d67c3f54b56d49bf8327359fc69cd7392bb8ab5338a9075ce8fec1b431e334007d4de1e5e83201ca35762e24428e24b7c4150525d88db452c5f08f93f4593daa458ab6280b012532183aed3a8e4a01'
     );
+
+    expect(
+      encodeData(customTypedData, 'FooBarDomain', customTypedData.domain, { domain: 'FooBarDomain' }).toString('hex')
+    ).toBe(
+      '85b412c5db9e26aa4f6bf794e72b1557f463a0978ceef9acaff7f6ff1eb24e57c70ef06638535b4881fafcac8287e210e3769ff1a8e91f1b95d6246e61e4d3c6c89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc60000000000000000000000000000000000000000000000000000000000000001000000000000000000000000cccccccccccccccccccccccccccccccccccccccc'
+    );
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => encodeData(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
 
@@ -181,10 +196,13 @@ describe('getStructHash', () => {
     expect(getStructHash(approvalTypedData, 'TransactionApproval', approvalTypedData.message).toString('hex')).toBe(
       '309886ad75ec7c2c6a69bffa2669bad00e3b1e0a85221eff4e8926a2f8ff5077'
     );
+
+    expect(getStructHash(customTypedData, 'FooBarDomain', customTypedData.domain).toString('hex')).toBe(
+      '6ff4505ed33bedaadf3491aa039d9ccb91a3114eeab940e69fdecb809fb26882'
+    );
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => getStructHash(invalidSchema, 'EIP712Domain', invalidSchema.domain)).toThrow();
   });
 
@@ -208,6 +226,9 @@ describe('getMessage', () => {
     expect(getMessage(arrayTypedData).toString('hex')).toBe(
       '1901f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f6757567025d2ba15d5ebb228ea677055b8b601007e60e9463f6ed7c68f918189'
     );
+    expect(getMessage(customTypedData, false, { domain: 'FooBarDomain' }).toString('hex')).toBe(
+      '19016ff4505ed33bedaadf3491aa039d9ccb91a3114eeab940e69fdecb809fb268826757567025d2ba15d5ebb228ea677055b8b601007e60e9463f6ed7c68f918189'
+    );
   });
 
   it('hashes the message with Keccak-256', () => {
@@ -220,10 +241,12 @@ describe('getMessage', () => {
     expect(getMessage(arrayTypedData, true).toString('hex')).toBe(
       'c6f6c8028eadb17bc5c9e2ea2f738e92e49cfa627d19896c250fd2eac653e4e0'
     );
+    expect(getMessage(customTypedData, true, { domain: 'FooBarDomain' }).toString('hex')).toBe(
+      'e028c0622beef9bde70e78a98c1d09a95ffe0cd9cfa5ff6a99f7db7c9245e103'
+    );
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => getMessage(invalidSchema)).toThrow();
   });
 
@@ -251,7 +274,6 @@ describe('asArray', () => {
   });
 
   it('throws for invalid JSON data', () => {
-    // @ts-expect-error type is missing `EIP712Domain`
     expect(() => asArray(invalidSchema)).toThrow();
   });
 
