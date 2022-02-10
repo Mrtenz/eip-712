@@ -5,8 +5,8 @@ import { EIP_712_STRICT_TYPED_DATA_TYPE, EIP_712_TYPED_DATA_TYPE, TypedData } fr
 /**
  * Validates that `data` matches the EIP-712 JSON schema.
  *
- * @param {any} data
- * @return {boolean}
+ * @param data
+ * @param options
  */
 export const validateTypedData = (data: unknown, options?: Options): data is TypedData => {
   const { verifyDomain } = getOptions(options);
