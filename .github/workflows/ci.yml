@@ -18,6 +18,8 @@ jobs:
         node-version:
           - 10
           - 12
+          - 14
+          - 16
 
     steps:
       - uses: actions/checkout@v2
@@ -48,8 +50,7 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 10
-          - 12
+          - 16
 
     steps:
       - uses: actions/checkout@v2
