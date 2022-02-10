@@ -148,3 +148,25 @@ const typedData = { /*...*/ };
 console.log(getDependencies(typedData, 'EIP712Domain')); // ['EIP712Domain']
 console.log(getDependencies(typedData, 'Mail')); // ['Mail', 'Person']
 ```
+
+### Non-standard domains (e.g., CIP-23)
+
+It's possible to use a custom domain format, like from the CIP-23 specification, or to disable verifying the domain format completely, if you want to use a custom implementation of EIP-712.
+
+To do this, you can pass options to each function, as last parameter. For example, in order to get the message hash for a message, you can do the following:
+
+```ts
+import { getMessage } from 'eip-712';
+import type { Options } from 'eip-712';
+
+const typedData = { /*...*/ };
+const options: Options = {
+  // A custom domain identifier. Defaults to 'EIP712Domain'.
+  domain: 'CIP23Domain',
+
+  // Whether to verify the structure of the domain. Defaults to 'true'.
+  verifyDomain: false
+};
+
+console.log(getMessage(typedData, true, options).toString('hex'));
+```
