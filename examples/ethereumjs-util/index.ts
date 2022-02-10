@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+import { bytesToHex } from '@noble/hashes/utils';
 import { ecsign } from 'ethereumjs-util';
 import { getMessage, TypedData } from '../../src';
 
@@ -49,8 +50,8 @@ const privateKey = randomBytes(32);
 const message = getMessage(typedData, true);
 
 // Sign the message with the private key
-const { r, s, v } = ecsign(message, privateKey);
+const { r, s, v } = ecsign(Buffer.from(message), privateKey);
 
 /* eslint-disable no-console */
-console.log(`Message: 0x${message.toString('hex')}`);
+console.log(`Message: 0x${bytesToHex(message)}`);
 console.log(`Signature: (0x${r.toString('hex')}, 0x${s.toString('hex')}, ${v})`);

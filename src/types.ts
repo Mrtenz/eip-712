@@ -67,10 +67,6 @@ export type StrictTypedData = Infer<typeof EIP_712_STRICT_TYPED_DATA_TYPE>;
  * - Reference types: array type (e.g. uint8[], SomeStruct[]), struct type (e.g. SomeStruct)
  *
  * The `uint` and `int` aliases like in Solidity are not supported. Fixed point numbers are not supported.
- *
- * @param {Record<string, unknown>} types
- * @param {string} type
- * @return {boolean}
  */
 export const isValidType = (types: Record<string, unknown>, type: string): boolean => {
   if (STATIC_TYPES.includes(type as string)) {
