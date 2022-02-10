@@ -1,17 +1,4 @@
-import {
-  array,
-  intersection,
-  number,
-  object,
-  optional,
-  pattern,
-  record,
-  refinement,
-  string,
-  StructType,
-  type,
-  union
-} from 'superstruct';
+import { array, assign, Infer, number, object, optional, pattern, record, refine, string, union } from 'superstruct';
 
 export const TYPE_REGEX = /^\w+/;
 export const ARRAY_REGEX = /^(.*)\[([0-9]*?)]$/;
@@ -20,7 +7,7 @@ export const NUMBER_REGEX = /^u?int([0-9]{0,3})$/;
 
 export const STATIC_TYPES = ['address', 'bool', 'bytes', 'string'];
 
-const TYPE = refinement(string(), 'Type', (type, context) => {
+const TYPE = refine(string(), 'Type', (type, context) => {
   return isValidType(context.branch[0].types, type);
 });
 
@@ -38,7 +25,7 @@ export const EIP_712_TYPE = object({
  * Note that the `uint` and `int` aliases like in Solidity, and fixed point numbers are not supported by the EIP-712
  * standard.
  */
-export type EIP712Type = StructType<typeof EIP_712_TYPE>;
+export type EIP712Type = Infer<typeof EIP_712_TYPE>;
 
 export const EIP_712_DOMAIN_TYPE = object({
   name: optional(string()),
@@ -51,19 +38,27 @@ export const EIP_712_DOMAIN_TYPE = object({
 /**
  * The EIP712 domain struct. Any of these fields are optional, but it must contain at least one field.
  */
-export type EIP712Domain = StructType<typeof EIP_712_DOMAIN_TYPE>;
+export type EIP712Domain = Infer<typeof EIP_712_DOMAIN_TYPE>;
 
 export const EIP_712_TYPED_DATA_TYPE = object({
-  types: intersection([type({ EIP712Domain: array(EIP_712_TYPE) }), record(string(), array(EIP_712_TYPE))]),
+  types: record(string(), array(EIP_712_TYPE)),
   primaryType: string(),
-  domain: EIP_712_DOMAIN_TYPE,
+  domain: object(),
   message: object()
 });
+
+export const EIP_712_STRICT_TYPED_DATA_TYPE = assign(
+  EIP_712_TYPED_DATA_TYPE,
+  object({
+    domain: EIP_712_DOMAIN_TYPE
+  })
+);
 
 /**
  * The complete typed data, with all the structs, domain data, primary type of the message, and the message itself.
  */
-export type TypedData = StructType<typeof EIP_712_TYPED_DATA_TYPE>;
+export type TypedData = Infer<typeof EIP_712_TYPED_DATA_TYPE>;
+export type StrictTypedData = Infer<typeof EIP_712_STRICT_TYPED_DATA_TYPE>;
 
 /**
  * Checks if a type is valid with the given `typedData`. The following types are valid:

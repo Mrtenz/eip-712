@@ -46,7 +46,7 @@
   "dependencies": {
     "@findeth/abi": "^0.3.0",
     "keccak": "^3.0.1",
-    "superstruct": "^0.10.12"
+    "superstruct": "^0.15.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
