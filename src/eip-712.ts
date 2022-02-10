@@ -7,12 +7,6 @@ const EIP_191_PREFIX = Buffer.from('1901', 'hex');
 /**
  * Get the dependencies of a struct type. If a struct has the same dependency multiple times, it's only included once
  * in the resulting array.
- *
- * @param {TypedData} typedData
- * @param {string} type
- * @param {Options} [options]
- * @param {string[]} [dependencies]
- * @return {string[]}
  */
 export const getDependencies = (
   typedData: TypedData,
@@ -70,32 +64,21 @@ export const encodeType = (typedData: TypedData, type: string, options?: Options
 
 /**
  * Get a type string as hash.
- *
- * @param {TypedData} typedData
- * @param {string} type
- * @param {Options} [options]
- * @return {BufferEncoding}
  */
-export const getTypeHash = (typedData: TypedData, type: string, options?: Options): Buffer => {
+export const getTypeHash = (typedData: TypedData, type: string, options?: Options): Uint8Array => {
   return keccak256(encodeType(typedData, type, options), 'utf8');
 };
 
 /**
  * Encodes a single value to an ABI serialisable string, number or Buffer. Returns the data as tuple, which consists of
  * an array of ABI compatible types, and an array of corresponding values.
- *
- * @param {TypedData} typedData
- * @param {string} type
- * @param {any} data
- * @param {Options} [options]
- * @returns {[string[], (string | Buffer | number)[]}
  */
 const encodeValue = (
   typedData: TypedData,
   type: string,
   data: unknown,
   options?: Options
-): [string, string | Buffer | number] => {
+): [string, string | Uint8Array | number] => {
   const match = type.match(ARRAY_REGEX);
 
   // Checks for array types
@@ -137,19 +120,13 @@ const encodeValue = (
 /**
  * Encode the data to an ABI encoded Buffer. The data should be a key -> value object with all the required values. All
  * dependant types are automatically encoded.
- *
- * @param {TypedData} typedData
- * @param {string} type
- * @param {Record<string, any>} data
- * @param {Options} [options]
- * @return {Buffer}
  */
 export const encodeData = (
   typedData: TypedData,
   type: string,
   data: Record<string, unknown>,
   options?: Options
-): Buffer => {
+): Uint8Array => {
   const [types, values] = typedData.types[type].reduce<[string[], unknown[]]>(
     ([types, values], field) => {
       if (data[field.name] === undefined || data[field.name] === null) {
@@ -173,32 +150,21 @@ export const encodeData = (
 /**
  * Get encoded data as a hash. The data should be a key -> value object with all the required values. All dependant
  * types are automatically encoded.
- *
- * @param {TypedData} typedData
- * @param {string} type
- * @param {Record<string, any>} data
- * @param {Options} [options]
- * @return {Buffer}
  */
 export const getStructHash = (
   typedData: TypedData,
   type: string,
   data: Record<string, unknown>,
   options?: Options
-): Buffer => {
+): Uint8Array => {
   return keccak256(encodeData(typedData, type, data, options));
 };
 
 /**
  * Get the EIP-191 encoded message to sign, from the typedData object. If `hash` is enabled, the message will be hashed
  * with Keccak256.
- *
- * @param {TypedData} typedData
- * @param {boolean} hash
- * @param {Options} [options]
- * @return {Buffer}
  */
-export const getMessage = (typedData: TypedData, hash?: boolean, options?: Options): Buffer => {
+export const getMessage = (typedData: TypedData, hash?: boolean, options?: Options): Uint8Array => {
   const { domain } = getOptions(options);
   const message = Buffer.concat([
     EIP_191_PREFIX,
@@ -215,12 +181,6 @@ export const getMessage = (typedData: TypedData, hash?: boolean, options?: Optio
 
 /**
  * Get the typed data as array. This can be useful for encoding the typed data with the contract ABI.
- *
- * @param {TypedData} typedData
- * @param {string} [type]
- * @param data
- * @param {Options} [options]
- * @return {any[]}
  */
 export const asArray = (
   typedData: TypedData,

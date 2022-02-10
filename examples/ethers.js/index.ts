@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+import { bytesToHex } from '@noble/hashes/utils';
 import { utils } from 'ethers';
 import { getMessage, TypedData } from '../../src';
 
@@ -53,5 +54,5 @@ const message = getMessage(typedData, true);
 const { r, s, v } = signingKey.signDigest(message);
 
 /* eslint-disable no-console */
-console.log(`Message: 0x${message.toString('hex')}`);
+console.log(`Message: 0x${bytesToHex(message)}`);
 console.log(`Signature: (${r}, ${s}, ${v})`);

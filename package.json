@@ -40,12 +40,12 @@
     "lint:eslint": "eslint . --ignore-path .gitignore --ext .ts,.tsx,.js,.jsx",
     "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{ts,tsx,js,json}'",
     "lint:lockfile": "lockfile-lint --type yarn --path yarn.lock --allowed-hosts yarn --validate-https --validate-checksum --validate-integrity",
-    "prettier": "prettier --write --ignore-path .gitignore '**/*.{ts,tsx,js,json}'",
+    "format": "prettier --write --ignore-path .gitignore '**/*.{ts,tsx,js,json}'",
     "prepare": "yarn run build"
   },
   "dependencies": {
     "@findeth/abi": "^0.3.0",
-    "keccak": "^3.0.1",
+    "@noble/hashes": "^1.0.0",
     "superstruct": "^0.15.3"
   },
   "devDependencies": {
@@ -68,7 +68,7 @@
     "ethereumjs-util": "^7.0.4",
     "ethers": "^5.0.9",
     "husky": "^4.2.5",
-    "jest": "^26.4.2",
+    "jest": "^27.5.1",
     "lint-staged": "^10.2.13",
     "lockfile-lint": "^4.3.7",
     "prettier": "^2.1.1",
